@@ -213,3 +213,39 @@ int main() {                 // 프로그램 시작 지점
 
     return 0;                // 프로그램 정상 종료
 }
+
+//과제 외에 프로그램
+#include <iostream>             
+#include <string>               // std::string 타입 사용을 위해 포함.
+using namespace std;            
+
+class Printer {                 // Printer 클래스 정의 
+public:                         
+    void print(const string& s) { // 문자열을 상수 참조로 받아 출력하는 멤버 함수 정의.
+        cout << "Printer: " << s << endl; 
+    }                          
+};                              
+
+class Logger {                  // Logger 클래스 정의
+public:                         
+    void log(const string& s) { // 문자열을 상수 참조로 받아 로그처럼 출력하는 멤버 함수 정의.
+        cout << "Logger: " << s << endl; 
+    }                          
+};                             
+
+class Device : public Printer, public Logger { // Device는 Printer와 Logger를 공개 상속(다중 상속).
+public:                         
+    void operate() {            // Device 고유의 멤버 함수 operate 정의.
+        print("출력 시작");     // Printer에서 상속받은 print() 호출.
+        log("출력 완료");       // Logger에서 상속받은 log() 호출.
+    }                        
+};                              
+
+int main() {                   
+    Device d;                   // Device 타입의 객체 d 생성.
+    d.operate();                // d의 operate() 호출 -> print와 log가 차례로 실행됨.
+    // 부모의 멤버는 직접 접근 가능
+    d.print("직접 호출된 print"); // Base 클래스인 Printer의 print를 직접 호출(다중 상속으로 접근 가능).
+    d.log("직접 호출된 log");     // Base 클래스인 Logger의 log를 직접 호출.
+    return 0;                
+}                           
