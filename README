@@ -1,0 +1,215 @@
+// 자식 클래스 관련 코드
+#include<iostream>
+using namespace std;
+
+class Vehicle // 클래스 정의
+{
+private:	//접근 지정자. 클래스 외부에서 접근 불가능.
+	int person = 0;    // 탑승인원 선언 및 0으로 초기화. 탑승 인원 정보를 저장하기 위한 멤버 변수
+	int baggage = 0;       // 화물 무게 선언 및 0으로 초기화. 화물 무게 정보를 저장하기 위한 멤버 변수
+public:	//접근 지정자. 클래스 외부에서 접근 가능
+	void ride()  // 탑승. ride라는 멤버 함수 선언 및 정의.
+	{
+		person++; // ride 함수가 시작되면 person을 1 증가시킴. (탑승인원)
+	}
+	void load(int weight) { 
+		baggage += weight;
+	};   // 짐 싣기. load 함수의 프로토타입. (baggage에 weight 만큼 무게 추가)
+	void getOff() {
+		person--;
+	};   // 하차. getOff라는 멤버 함수 선언 및 정의 
+	int getPerson() const  // 탑승인원 확인 // 비행기 안의 탑승인원 수를 확인하는 건 고정.
+	{
+		return person;
+	}
+};
+
+class Cruise :public Vehicle //vehicle을 public으로 상속
+{
+private:
+	int room = 0;
+public:
+	void setRoom(int room) {
+		this->room = room;
+		};    // 크루즈의 방 수 설정
+	int getRoom() const {
+		return room;
+	};
+	void countPerson()
+	{
+		cout << Vehicle::getPerson() << endl;     // 부모클래스 호출
+	}
+	void show()   // 출력 함수
+	{
+		cout << "Cruise person: " << getPerson() << endl;  // 부모클래스 호출
+		cout << "Cruise rooms: " << room << endl;
+	}
+};
+
+class AirPlane :public Vehicle //vehicle을 public으로 상속
+{
+private:
+	int seat = 0;
+public:
+	void setSeat(int seat) {
+		this->seat = seat;
+	};    // 자리 수 설정
+	int getSeat() {
+		return seat;
+	}
+	void countPerson()    // 탑승인원 확인
+	{
+		cout << Vehicle::getPerson() << endl;     // 부모클래스 호출
+	}
+	void show()   // 출력 함수
+	{
+		cout << "AirPlane person: " << getPerson() << endl; // 부모클래스 호출
+		cout << "AirPlane seats: " << seat << endl;
+	}
+};
+
+int main(int argc, char const* argv[])
+{
+	Cruise dolphin;	//Cruise 객체 dolphin 생성
+	dolphin.ride();    // 부모클래스 멤버함수  접근
+	dolphin.load(10);  // 부모클래스 멤버함수  접근
+	dolphin.setRoom(50); // 방 50개 설정
+	dolphin.countPerson();     // 자식클래스 멤버함수 호출
+	dolphin.show();         // 정보 출력
+
+	AirPlane cppAir;	//Airplance 객체 cppAir 생성
+	cppAir.ride();    // 부모클래스의 멤버함수 접근
+	cppAir.load(20);  // 부모클래스 멤버함수  접근 
+	cppAir.setSeat(200); // 좌석 200개 설정
+	cppAir.countPerson();     // 자식클래스 멤버함수 호출
+	cppAir.show();         // 정보 출력
+
+	return 0;
+}
+
+//단일 상속
+#include <iostream>
+#include <string>
+using namespace std;
+
+// 부모 클래스 (기반 클래스)
+class Person {
+protected:
+    string name;
+    int age;
+
+protected:  // introduce()를 protected로 바꿈 → 자식 클래스에서만 사용 가능
+    void introduce() {
+        cout << "이름: " << name << ", 나이: " << age << endl;
+    }
+
+public:
+    Person() : name("이름없음"), age(0) {}   // 디폴트 생성자 추가
+    Person(string n, int a) : name(n), age(a) {}
+};
+
+// 자식 클래스 (파생 클래스)
+class Student : public Person {
+private:
+    string major;
+
+public:
+    // 부모 생성자 직접 호출 제거 → 디폴트 생성자 호출됨
+    Student(string n, int a, string m) {
+        name = n;     // protected 멤버 직접 접근 가능
+        age = a;
+        major = m;
+    }
+
+    void study() {
+        // 부모의 protected 함수 introduce() 사용 가능
+        introduce();
+        cout << name << " 학생이 " << major << " 전공 공부 중입니다." << endl;
+    }
+};
+
+int main() {
+    Student s("홍길동", 21, "컴퓨터공학");
+    // s.introduce();   // 에러: protected라서 외부 호출 불가
+    s.study();          // introduce()는 study() 내부에서 호출 가능
+    return 0;
+}
+
+#include <iostream>
+using namespace std;
+
+class Teacher { //Teacher 라는 이름의 클래스를 정의.
+public:
+    void teach() { //teach라는 이름의 멤버 함수 정의.
+        cout << "강의를 하고 있습니다." << endl;
+    }
+    void show() { //show라는 멤버 함수 정의
+        cout << "중복 불가능." << endl;
+    }
+};
+
+class Researcher { //Researcher 라는 이름의 클래스 정의
+public:
+    void research() { //research() 멤버 함수 정의
+        cout << "연구를 하고 있습니다." << endl;
+    }
+    void show() { //show()라는 이름의 멤버 함수를 정의
+        cout << "중복 불가능." << endl;
+    }
+};
+
+// 다중 상속
+class Professor : public Teacher, public Researcher { //Professor 클래스를 정의하며, Teacher와 Researcher를 상속
+public:
+    void introduce() {
+        cout << "저는 교수입니다." << endl;
+    }
+};
+
+int main() {
+    Professor p; //Professor 타입의 지역 객체 p 를 생성
+    p.introduce(); //p 객체의 introduce() 호출
+    p.teach(); //Professor가 Teacher를 상속했으므로 teach()를 호출 가능
+    p.research(); //Researcher로부터 상속된 research() 호출
+    // p.show(); // 컴파일러는 어느 show()를 호출할지(Teacher::show 또는 Researcher::show) 모르기 때문에 모호성 오류가 발생
+    p.Teacher::show(); //명시적으로 Teacher 쪽의 show()를 호출
+    p.Researcher::show(); //명시적으로 Researcher 쪽의 show()를 호출
+    return 0;
+}
+
+//오버라이딩
+#include <iostream>          // 표준 입출력 사용을 위한 헤더 포함
+using namespace std;         // std::를 생략하고 표준 라이브러리를 사용하기 위해 선언
+
+class Animal {
+public:
+    virtual void speak() {   // 가상 함수 선언 → 자식 클래스에서 재정의할 수 있음
+        cout << "동물이 소리를 냅니다." << endl;  // 기본 동작: "동물이 소리를 냅니다." 출력
+    }
+};
+
+class Dog : public Animal {  // Animal 클래스를 상속받은 Dog 클래스 정의
+public:
+    void speak() override {  // 부모의 virtual 함수 재정의 (override 사용 가능)
+        cout << "멍멍!" << endl;  // Dog 객체가 speak() 호출 시 "멍멍!" 출력
+    }
+};
+
+class Cat : public Animal {  // Animal 클래스를 상속받은 Cat 클래스 정의
+public:
+    void speak() override {  // 부모의 virtual 함수 재정의
+        cout << "야옹!" << endl;  // Cat 객체가 speak() 호출 시 "야옹!" 출력
+    }
+};
+
+int main() {                 // 프로그램 시작 지점
+    Animal a1;               // Animal 클래스 객체 생성
+    Dog a2;                  // Dog 클래스 객체 생성
+    Cat a3;                  // Cat 클래스 객체 생성
+
+    a1.speak();              // Animal 객체 → "동물이 소리를 냅니다." 출력
+    a2.speak();              // Dog 객체 → "멍멍!" 출력
+    a3.speak();              // Cat 객체 → "야옹!" 출력
+
+    return 0;                // 프로그램 정상 종료
+}
